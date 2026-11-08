@@ -1,0 +1,12 @@
+import chromium from "@sparticuz/chromium"; import puppeteer from "puppeteer-core";
+const b = await puppeteer.launch({ args: chromium.args, executablePath: await chromium.executablePath(), headless: "shell" });
+const p = await b.newPage(); await p.setViewport({ width: 1440, height: 900 });
+await p.evaluateOnNewDocument(() => localStorage.setItem("wz-guide-seen", "1"));
+await p.goto("http://localhost:3100/ward", { waitUntil: "domcontentloaded" });
+const time = async (l) => { const t = performance.now(); await p.screenshot({ path: "/tmp/ss.png" }); console.log(l, Math.round(performance.now() - t) + "ms"); };
+await new Promise(r => setTimeout(r, 1200));
+await p.evaluate(() => [...document.querySelectorAll("button")].find(b => b.textContent.includes("Cut the internet"))?.click());
+await new Promise(r => setTimeout(r, 5000));
+await p.evaluate(() => document.querySelectorAll("iframe").forEach(f => f.remove()));
+await new Promise(r => setTimeout(r, 1500)); await time("phone iframe removed, t=8s");
+await b.close();

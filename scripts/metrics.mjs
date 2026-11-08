@@ -1,0 +1,13 @@
+import chromium from "@sparticuz/chromium"; import puppeteer from "puppeteer-core";
+const [, , tabName = "Overview"] = process.argv;
+const b = await puppeteer.launch({ args: chromium.args, executablePath: await chromium.executablePath(), headless: "shell" });
+const p = await b.newPage(); await p.setViewport({ width: 1440, height: 900 });
+await p.evaluateOnNewDocument(() => localStorage.setItem("wz-guide-seen", "1"));
+await p.goto("http://localhost:3100/ward", { waitUntil: "domcontentloaded" });
+await new Promise(r => setTimeout(r, 1500));
+await p.evaluate(t => [...document.querySelectorAll("nav button")].find(b => b.textContent.startsWith(t))?.click(), tabName);
+await new Promise(r => setTimeout(r, 6000));
+const a = await p.metrics(); await new Promise(r => setTimeout(r, 3000)); const c = await p.metrics();
+const d = k => (((c[k] - a[k]) / 3) * 100).toFixed(0) + "%";
+console.log(`${tabName}: main-thread busy ${d("TaskDuration")} | script ${d("ScriptDuration")} | layout ${d("LayoutDuration")} | style ${d("RecalcStyleDuration")} | nodes ${c.Nodes} | listeners ${c.JSEventListeners}`);
+await b.close();

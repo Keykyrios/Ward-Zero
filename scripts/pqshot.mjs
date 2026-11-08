@@ -1,0 +1,11 @@
+import chromium from "@sparticuz/chromium"; import puppeteer from "puppeteer-core";
+const [, , out] = process.argv;
+const b = await puppeteer.launch({ args: chromium.args, executablePath: await chromium.executablePath(), headless: "shell" });
+const p = await b.newPage(); await p.setViewport({ width: 1440, height: 900 });
+const errs = []; p.on("pageerror", e => errs.push(e.message));
+await p.goto("http://localhost:3100/ward", { waitUntil: "domcontentloaded" }); await new Promise(r => setTimeout(r, 2500));
+const click = async t => { await p.evaluate(t => { const e = [...document.querySelectorAll("button")].find(b => b.textContent.includes(t)); e && e.click(); }, t); await new Promise(r => setTimeout(r, 700)); };
+await click("Cut the internet"); for (let i = 0; i < 3; i++) await click("Skip ahead"); await new Promise(r => setTimeout(r, 7000));
+const ls = await p.evaluate(() => ({ idKeys: Object.keys(localStorage).filter(k => k.startsWith("wz-pq")), outbox: (localStorage.getItem("wz-outbox") || "").slice(0, 40), outboxLen: (localStorage.getItem("wz-outbox") || "").length, hasPlainVitals: (localStorage.getItem("wz-outbox") || "").includes("spo2") }));
+console.log(JSON.stringify(ls), "pageerrors:", errs);
+await click("Care team"); await new Promise(r => setTimeout(r, 1500)); await p.screenshot({ path: `${out}-prot.png` }); await b.close();

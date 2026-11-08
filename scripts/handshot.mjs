@@ -1,0 +1,11 @@
+import chromium from "@sparticuz/chromium"; import puppeteer from "puppeteer-core";
+const [, , out] = process.argv;
+const b = await puppeteer.launch({ args: chromium.args, executablePath: await chromium.executablePath(), headless: "shell" });
+const p = await b.newPage(); await p.setViewport({ width: 1440, height: 900 });
+await p.goto("http://localhost:3100/ward", { waitUntil: "domcontentloaded" }); await new Promise(r => setTimeout(r, 2500));
+const click = async t => { await p.evaluate(t => { const e = [...document.querySelectorAll("button")].find(b => b.textContent.includes(t)); e && e.click(); }, t); await new Promise(r => setTimeout(r, 700)); };
+for (let i = 0; i < 6; i++) await click("Skip ahead"); await click("Pause time");
+await click("Handover"); await new Promise(r => setTimeout(r, 1200)); await click("Write summary"); await new Promise(r => setTimeout(r, 4000));
+await p.screenshot({ path: `${out}-hand.png` });
+await click("Care team"); await new Promise(r => setTimeout(r, 1500)); await p.screenshot({ path: `${out}-team.png` });
+await b.close();

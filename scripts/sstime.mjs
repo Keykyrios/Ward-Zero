@@ -1,0 +1,18 @@
+import chromium from "@sparticuz/chromium"; import puppeteer from "puppeteer-core";
+const b = await puppeteer.launch({ args: chromium.args, executablePath: await chromium.executablePath(), headless: "shell" });
+const p = await b.newPage(); await p.setViewport({ width: 1440, height: 900 });
+await p.goto("http://localhost:3100/ward", { waitUntil: "domcontentloaded" }); await new Promise(r => setTimeout(r, 1500));
+const time = async (l) => { const t = performance.now(); await p.screenshot({ path: "/tmp/ss.png" }); console.log(l, Math.round(performance.now() - t) + "ms"); };
+await time("no tour");
+await p.evaluate(() => { const e = [...document.querySelectorAll("[role=dialog] button")].find(b => b.textContent.startsWith("Show me around")); e?.click(); });
+await new Promise(r => setTimeout(r, 1500)); await time("spotlight up #1");
+await p.evaluate(() => document.querySelector("div.fixed.inset-0.z-40")?.remove());
+await time("dimmer removed");
+await p.evaluate(() => { document.querySelectorAll(".pip-bob,.pip-eyes,.pip-heart,.pip-mouth,.pip-point").forEach(e => (e.style.animation = "none")); });
+await time("dimmer removed + Pip animations off");
+await p.evaluate(() => { document.querySelectorAll("[role=dialog]").forEach(e => e.remove()); });
+await time("bubble removed too");
+await p.evaluate(() => performance.mark("x")); 
+const lt = await p.evaluate(() => new Promise(res => { let n = 0, worst = 0, last = performance.now(); const f = () => { const t = performance.now(); worst = Math.max(worst, t - last); last = t; if (++n < 120) requestAnimationFrame(f); else res(Math.round(worst)); }; requestAnimationFrame(f); }));
+console.log("worst frame gap over 120 frames (ms):", lt);
+await b.close();

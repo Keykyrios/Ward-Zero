@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+
+# next.js build
+.next/
+out/
+tsconfig.tsbuildinfo
+
+# environment / secrets — NEVER commit these
+.env
+.env.local
+.env*.local
+.env.production
+.env.development
+
+# generated screenshots (puppeteer / dev artefacts)
+scenario.png
+undefined-*.png
+
+# firebase deploy artefact (publish via console instead)
+database.rules.json
+
+# broken directory artefact
+{app/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/

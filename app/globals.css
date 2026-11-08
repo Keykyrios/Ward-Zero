@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+* { border-radius: 0 !important; }
+html { background: #0a1110; scroll-behavior: smooth; }
+body { background: #0a1110; color: #e8eee8; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; line-height: 1.55; }
+/* Display type: large sizes get the high optical size and soft terminals; tight tracking only where it is huge. */
+.font-display { font-variation-settings: "SOFT" 60, "WONK" 0, "opsz" 144; letter-spacing: -0.025em; line-height: 0.98; }
+.font-display.i { font-style: italic; font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144; }
+.font-mono, .num { font-variant-numeric: tabular-nums slashed-zero; font-feature-settings: "zero" 1; }
+.label { font-family: var(--f-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #9fb0a8; }
+.spotlight-card { box-shadow: none !important; }
+:focus-visible { outline: 2px solid #6adcd1; outline-offset: 2px; }
+@keyframes mq { to { transform: translateX(-50%); } }
+.mq { animation: mq 40s linear infinite; width: max-content; }
+@keyframes pulse-ring { 0% { opacity: .9; transform: scale(1);} 100% { opacity: 0; transform: scale(2.4);} }
+.ping::after { content: ""; position: absolute; inset: 0; border: 1px solid currentColor; animation: pulse-ring 1.6s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .mq, .ping::after { animation: none; } html { scroll-behavior: auto; } }
+
+/* The care screens (ward and phone) share the landing page's ground, type and square corners. */
+.care { font-size: 17px; line-height: 1.6; color: #e8eee8; background: #0a1110; }
+.care .font-display { line-height: 1.08; }
+.care .num { font-variant-numeric: tabular-nums; font-feature-settings: normal; }
+.care :focus-visible { outline: 2px solid #6adcd1; outline-offset: 2px; }
+.care select, .care input { color-scheme: dark; }
+@media (prefers-reduced-motion: reduce) { .care * { transition: none !important; } }
+
+/* Motion that only moves transforms and opacity. */
+@keyframes ecg { to { transform: translateX(-1600px); } }
+.ecg-strip { animation: ecg var(--d, 8s) linear infinite; will-change: transform; }
+@keyframes colin { from { opacity: 0; transform: translateX(18px); } }
+.col-in { animation: colin .7s cubic-bezier(.16,1,.3,1); }
+@keyframes flash { 0% { box-shadow: inset 0 0 0 2px currentColor; } 100% { box-shadow: inset 0 0 0 0 transparent; } }
+.flash { animation: flash 1.2s ease-out; }
+.spot::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .35s; background: radial-gradient(380px circle at var(--x, 50%) var(--y, 50%), rgba(106,220,209,.12), transparent 65%); }
+.spot:hover::before { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .ecg-strip, .col-in, .flash { animation: none; } }
+
+.phone-frame { border-radius: 46px !important; }
+.phone-notch { border-radius: 0 0 14px 14px !important; }
+.phone-screen { border-radius: 34px !important; }
+@keyframes ripple { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(3.4); opacity: 0; } }
+.ripple { animation: ripple 2.2s ease-out infinite; }
+.ripple-calm { animation-duration: 4.5s; opacity: .5; }
+@media (prefers-reduced-motion: reduce) { .ripple { animation: none; } }
+
+@keyframes breathe { 0%,100% { transform: scale(.9); opacity: .75; } 50% { transform: scale(1.04); opacity: 1; } }
+.breathe { animation: breathe 4s ease-in-out infinite; will-change: transform; border-radius: 9999px !important; }
+@media (prefers-reduced-motion: reduce) { .breathe { animation: none; } }
+
+/* Ward workspace: compact app type, soft corners on panels and controls. */
+.ward-app { font-size: 14px; line-height: 1.5; }
+.card { border-radius: 10px !important; }
+.rd { border-radius: 6px !important; }
+/* App screens use the sans for everything; serif stays on the landing page. */
+.care .font-display { font-family: inherit !important; font-weight: 600; letter-spacing: -0.01em; font-variation-settings: normal; line-height: 1.25; }
+
+/* Signal path: a short bright segment travels along each working hop. */
+.flow { stroke-dasharray: 10 90; stroke-dashoffset: 100; animation: flow 2.4s linear infinite; }
+@keyframes flow { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .flow { animation: none; stroke-dasharray: none; } }
+
+/* Pip, the guide. Motion is small and stops for people who ask for less. */
+.pip-bob { animation: pipbob 3.4s ease-in-out infinite; transform-origin: 60px 110px; }
+.pip-eyes { animation: pipblink 4.6s infinite; transform-origin: 60px 62px; transform-box: view-box; }
+.pip-heart { animation: pipbeat 1.3s ease-in-out infinite; transform-origin: 60px 12px; transform-box: view-box; }
+.pip-mouth { animation: pipchat .42s ease-in-out infinite alternate; transform-origin: 60px 74px; transform-box: view-box; }
+.pip-point { animation: pippoint 1.2s ease-in-out infinite alternate; }
+@keyframes pipbob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-3px) } }
+@keyframes pipblink { 0%,92%,100% { transform: scaleY(1) } 95% { transform: scaleY(.08) } }
+@keyframes pipbeat { 0%,60%,100% { transform: scale(1) } 70% { transform: scale(1.25) } 80% { transform: scale(1) } 88% { transform: scale(1.15) } }
+@keyframes pipchat { from { transform: scaleY(.55) } to { transform: scaleY(1) } }
+@keyframes pippoint { from { transform: rotate(0) } to { transform: rotate(-22deg) } }
+@media (prefers-reduced-motion: reduce) { .pip-bob,.pip-eyes,.pip-heart,.pip-mouth,.pip-point { animation: none } }

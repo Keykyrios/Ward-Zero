@@ -1,0 +1,11 @@
+import chromium from "@sparticuz/chromium"; import puppeteer from "puppeteer-core";
+const b = await puppeteer.launch({ args: chromium.args, executablePath: await chromium.executablePath(), headless: "shell" });
+const p = await b.newPage(); await p.setViewport({ width: 1440, height: 900 });
+await p.evaluateOnNewDocument(() => localStorage.setItem("wz-guide-seen", "1"));
+await p.goto("http://localhost:3100/ward", { waitUntil: "domcontentloaded" }); await new Promise(r => setTimeout(r, 6000));
+const fps = (l) => p.evaluate((l) => new Promise(res => { let n = 0; const t0 = performance.now(); const f = () => { n++; if (performance.now() - t0 < 2000) requestAnimationFrame(f); else res(l + ": " + (n / 2).toFixed(1) + " fps"); }; requestAnimationFrame(f); }), l);
+console.log(await fps("baseline (running, guide present)"));
+await p.evaluate(() => document.querySelector("div.fixed.bottom-4.z-50")?.remove()); console.log(await fps("guide removed"));
+await p.evaluate(() => document.querySelectorAll(".ecg-strip").forEach(e => e.parentElement.remove())); console.log(await fps("ecg removed"));
+await p.evaluate(() => [...document.querySelectorAll("button")].find(b => b.textContent.includes("Pause time"))?.click()); await new Promise(r => setTimeout(r, 800)); console.log(await fps("paused"));
+await b.close();
